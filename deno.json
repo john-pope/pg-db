@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "start": "cd www && deno task start",
+    "db": "deno run --allow-net --allow-env --allow-read=./ --allow-write=./database/migrations src/cli/main.ts",
+    "install-db": "deno install --import-map=./import_map.json --allow-net --allow-env --allow-read=./ --allow-write=./database/migrations --name=gul-db src/cli/main.ts"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  }
+}
