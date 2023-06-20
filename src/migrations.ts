@@ -1,6 +1,5 @@
-import postgres from "postgresjs";
 import { ensureConnection, Connection, CWD, DatabaseErrorCodes } from "./mod.ts";
-import { join } from "./deps.ts";
+import { join, postgresjs } from "./deps.ts";
 
 type Migration = {
     name: string;
@@ -12,7 +11,7 @@ export async function ensureMigrationsTable(sql: Connection, createIfNotExists=t
     try{
         await sql`SELECT * FROM migrations limit 1`;
     } catch (error) {
-        if(error instanceof postgres.PostgresError) {
+        if(error instanceof postgresjs.PostgresError) {
             if(error.code === DatabaseErrorCodes.TableDoesNotExist) {
                 if(createIfNotExists) {
                     const initMigration = '0000_init.ts'
