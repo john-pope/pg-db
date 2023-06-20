@@ -6,12 +6,12 @@ import {
 export const UpgradeCommand = new CliffyUpgradeCommand({
   main: "./src/cli/main.ts",
   args: [
-      "--config", "./deno.jsonc",
+      "--config=./deno.jsonc",
       "--allow-env",
-      "--allow-net", "api.github.com,deno.land",
+      "--allow-net=api.github.com,deno.land",
       "--allow-read",
-      "--allow-run", "deno",
-      "--allow-write", "./database",
+      "--allow-run",
+      "--allow-write=./database",
   ],
 
   provider: [
