@@ -19,7 +19,7 @@ export const UpgradeCommand = new Command()
 
         provider: [
             new GithubProvider({
-                repository: "utahstate/gul-fresh",
+                repository: "john-pope/pg-db",
                 token: Deno.env.get("GITHUB_TOKEN"),
             })],
       }),
