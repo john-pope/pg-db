@@ -6,7 +6,7 @@ import { UpgradeCommand } from "./upgrade.ts";
 
 const command = new Command()
   .name('gul-db')
-  .version('1.0.0')
+  .version('1.0.1')
   .description('Manage database migrations for gul')
   .default("help")
   .command("help", new HelpCommand().hidden())
