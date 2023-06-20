@@ -7,9 +7,10 @@ export const UpgradeCommand = new CliffyUpgradeCommand({
   main: "./src/cli/main.ts",
   args: [
       "--config=./deno.jsonc",
-      "--allow-env=GITHUB_TOKEN",
-      "--allow-net",
-      "--allow-read=./database",
+      "--allow-env",
+      "--allow-net=github.com",
+      "--allow-read=./",
+      "--allow-run=deno",
       "--allow-write=./database",
   ],
 
