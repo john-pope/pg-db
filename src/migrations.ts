@@ -1,5 +1,5 @@
 import postgres from "postgresjs";
-import { connect, Connection, DatabaseErrorCodes } from "./connection.ts";
+import { ensureConnection, Connection, CWD, DatabaseErrorCodes, join } from "./mod.ts";
 
 type Migration = {
     name: string;
@@ -11,12 +11,16 @@ export async function ensureMigrationsTable(sql: Connection, createIfNotExists=t
     try{
         await sql`SELECT * FROM migrations limit 1`;
     } catch (error) {
-        if(error instanceof postgres.PostgresError && error.code === DatabaseErrorCodes.TableDoesNotExist) {
-            if(createIfNotExists) {
-                const initMigration = '0000_init.ts'
-                await up(sql, initMigration, 0);
+        if(error instanceof postgres.PostgresError) {
+            if(error.code === DatabaseErrorCodes.TableDoesNotExist) {
+                if(createIfNotExists) {
+                    const initMigration = '0000_init.ts'
+                    await up(sql, initMigration, 0);
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                throw error
             }
         } else {
             console.error("Error running initial migration")
@@ -28,7 +32,8 @@ export async function ensureMigrationsTable(sql: Connection, createIfNotExists=t
 
 export async function up(sql: Connection, migration: string, batch: number) {
     // run migration
-    const migrationModule = await import(`./migrations/${migration}`);
+    const migrationPath = join(CWD, "database", "migrations", migration);
+    const migrationModule = await import(`file://${migrationPath}`);
     console.log(`Running migration ${migration}...`);
     await migrationModule.up(sql);
     // update migrations table
@@ -37,7 +42,8 @@ export async function up(sql: Connection, migration: string, batch: number) {
 
 export async function down(sql: Connection, migration: string) {
     // run migration
-    const migrationModule = await import(`./migrations/${migration}`);
+    const migrationPath = join(CWD, "database", "migrations", migration);
+    const migrationModule = await import(`file://${migrationPath}`);
     console.log(`Rolling back migration ${migration}...`);
     await migrationModule.down(sql);
 
@@ -49,7 +55,7 @@ export async function down(sql: Connection, migration: string) {
 
 export async function rollback(step=1) {
     // get latest migration from database
-    const sql = connect();
+    const sql = ensureConnection();
 
     const migrationsTableExists = await ensureMigrationsTable(sql, false);
     if(!migrationsTableExists) {
@@ -93,21 +99,36 @@ export async function rollback(step=1) {
 
 export async function migrate(step?: number) {
     // get latest migration from database
-    const sql = connect();
-
-    await ensureMigrationsTable(sql);
-    const allMigrations = await sql<Migration[]>`SELECT * FROM migrations ORDER BY name DESC`;
-    const latestMigration = allMigrations[0];
+    const sql = ensureConnection();
 
     // see if migrations folder exists
     try {
         Deno.statSync("./database/migrations").isDirectory;
     } catch {
-        Deno.mkdirSync("./database/migrations");
+        Deno.mkdirSync("./database/migrations", { recursive: true });
+        Deno.writeTextFileSync("./database/migrations/0000_init.ts", `import { Connection } from "pg-db";
+
+export async function up(sql: Connection) {
+    await sql\`CREATE TABLE migrations (
+        name TEXT PRIMARY KEY,
+        batch INTEGER NOT NULL,
+        ran_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )\`;
+}
+
+export async function down(sql: Connection) {
+    await sql\`DROP TABLE IF EXISTS migrations\`;
+    await sql\`DROP EXTENSION IF EXISTS "citext"\`
+}`
+        );
     }
 
+    await ensureMigrationsTable(sql);
+    const allMigrations = await sql<Migration[]>`SELECT * FROM migrations ORDER BY name DESC`;
+    const latestMigration = allMigrations[0];
+
     // look in ./database/migrations
-    const migrations = [...Deno.readDirSync("./database/migrations")];
+    const migrations = [...Deno.readDirSync(`${CWD}/database/migrations`)];
 
     // find all migrations that are newer than latest migration or not in allMigrations
     const newMigrations = migrations.filter((migration) => {
@@ -131,11 +152,11 @@ export async function migrate(step?: number) {
 
     sql.end();
     console.log('all migrations complete')
+    
 }
 
 export async function newMigration(name: string, index?: string) {
-    const template = `import postgres from "postgresjs";
-import { Connection } from "../connection.ts";
+    const template = `import { Connection } from "pg-db";
 
 export async function up(sql: Connection) {
     // write your migration here
