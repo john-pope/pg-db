@@ -1,4 +1,4 @@
-import { Command } from "cliffy/command/mod.ts";
+import { Command } from "../deps.ts";
 import { migrate } from "../migrations.ts";
 
 export const MigrateCommand = await new Command()

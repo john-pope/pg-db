@@ -1,7 +1,4 @@
-import postgresjs from "postgresjs";
-import { join } from "$std/path/mod.ts";
-
-export { join };
+import { postgresjs, join } from "./deps.ts";
 
 export const CWD = join(Deno.cwd());
 const databaseConnectionModule = await import (`file://${CWD}/database/connection.ts`);

@@ -1,16 +1,15 @@
-import { Command } from "cliffy/command/mod.ts";
 import {
+  Command,
   GithubProvider,
-  UpgradeCommand as CliffyUpgradeCommand,
-} from "cliffy/command/upgrade/mod.ts";
+  CliffyUpgradeCommand,
+} from "../deps.ts";
 
 export const UpgradeCommand = new Command()
   .command(
     "upgrade",
     new CliffyUpgradeCommand({
-        main: "cli/main.ts",
+        main: "src/cli/main.ts",
         args: [
-            "--import-map=./import_map.json",
             "--allow-env=GITHUB_TOKEN",
             "--allow-read=./",
             "--allow-write=./",

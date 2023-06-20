@@ -1,4 +1,4 @@
-import { Command, HelpCommand, CompletionsCommand } from "cliffy/command/mod.ts";
+import { Command, HelpCommand, CompletionsCommand } from "../deps.ts";
 import { MigrateCommand } from "./migrate.ts";
 import { RollbackCommand } from "./rollback.ts";
 import { NewCommand } from "./new.ts";

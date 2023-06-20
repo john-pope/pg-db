@@ -1,4 +1,4 @@
-import { Command } from "cliffy/command/mod.ts";
+import { Command } from "../deps.ts";
 import { rollback } from "../migrations.ts";
 
 export const RollbackCommand = await new Command()

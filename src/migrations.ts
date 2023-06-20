@@ -1,5 +1,6 @@
 import postgres from "postgresjs";
-import { ensureConnection, Connection, CWD, DatabaseErrorCodes, join } from "./mod.ts";
+import { ensureConnection, Connection, CWD, DatabaseErrorCodes } from "./mod.ts";
+import { join } from "./deps.ts";
 
 type Migration = {
     name: string;
