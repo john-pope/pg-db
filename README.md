@@ -15,6 +15,7 @@ Add [`postgresjs`](https://deno.land/x/postgresjs) to imports:
     "imports": {
         //...
         "postgresjs": "https://deno.land/x/postgresjs@v3.3.5/mod.js",
+        "pg-db": "https://raw.githubusercontent.com/john-pope/pg-db/1.0.0-alpha2/src/mod.ts",
     }
 }
 ```
