@@ -5,7 +5,7 @@ Simple migrations for postgres databases. This tool creates a table named `migra
 Navigate to project you want to use migrations on, Install CLI tool for project (assumes deno.jsonc for imports):
 
 ```bash
-deno install --name=YOUR_PROJECT-db --config=deno.jsonc -f --allow-net --allow-env --allow-read=./ --allow-write=./database/migrations https://raw.githubusercontent.com/john-pope/pg-db/1.0.0-alpha/src/cli/main.ts
+deno install --name=YOUR_PROJECT-db --config=deno.jsonc -f --allow-net --allow-env --allow-read --allow-run --allow-write=./database/migrations https://raw.githubusercontent.com/john-pope/pg-db/1.0.0/src/cli/main.ts
 ```
 
 Add [`postgresjs`](https://deno.land/x/postgresjs) to imports: 
@@ -15,7 +15,7 @@ Add [`postgresjs`](https://deno.land/x/postgresjs) to imports:
     "imports": {
         //...
         "postgresjs": "https://deno.land/x/postgresjs@v3.3.5/mod.js",
-        "pg-db": "https://raw.githubusercontent.com/john-pope/pg-db/1.0.0-alpha2/src/mod.ts",
+        "pg-db": "https://raw.githubusercontent.com/john-pope/pg-db/1.0.0/src/mod.ts",
     }
 }
 ```
