@@ -4,7 +4,6 @@ import { join } from "$std/path/mod.ts";
 export { join };
 
 export const CWD = join(Deno.cwd());
-console.log("CWD", CWD, import.meta.url);
 const databaseConnectionModule = await import (`file://${CWD}/database/connection.ts`);
 
 function connect() {
